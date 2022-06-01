@@ -58,13 +58,13 @@ We will use $t^v$ to indicate a sequence of integers of length $2n$ such that:
     $$
     t^v_i=\text{excess}_v(i) \qquad 0\leq i < 2n-1
     $$
-Finally we define a function $\texttt{find\_succ}(x,i,v)$ that given a sequence $x_0,x_1,\dots$ of integers and two integers $i$ and $v$ returns the index of the first element that follows $x_i$ and has value less or equal $x_i$:
+Finally we define a function $\texttt{find\_succ}(x,i,v)$ that given a sequence $x_0,x_1,\dots$ of integers and two integers $i$ and $v$ returns the index of the first element that follows $x_i$ and has value less or equal $v$:
     $$
-    \text{find\_succ}(x,i,v)=\min\{j :\ j>i \land x_j\leq x_i\}
+    \text{find\_succ}(x,i,v)=\min\{j :\ j>i \land x_j\leq v\}
     $$
-similarly we define a function $\texttt{find\_prev}(x,i,v)$ that returns the index of the last element that precedes $x_i$ and has value less than or equal to $x_i$
+similarly we define a function $\texttt{find\_prev}(x,i,v)$ that returns the index of the last element that precedes $x_i$ and has value less than or equal to $v$
     $$
-    \text{find\_prev}(x,i,v)=\max\{j :\ j<i \land x_j\leq x_i\}
+    \text{find\_prev}(x,i,v)=\max\{j :\ j<i \land x_j\leq v\}
     $$
 
 \section{Segment Tree}
@@ -210,13 +210,13 @@ The number of blocks in this level is $\frac{2n}{k}$ (numbered from $0$ to $\fra
     $$
     B_i = \left(\min_{ik \leq j < (i+1)k}\{t^v_j\}\right)-T_{\left\lfloor{\frac{i}{k}}\right\rfloor} \qquad 0\leq i < \frac{2n}{k}
     $$
-if we save the sequence $B$ in an array the number of bits needed is $\frac{2n}{k}\log{\log{2n}}=o(n)$ because each element of $B$ will be between $0$ and $\log{2n}$.
+if we save the sequence $B$ in an array the number of bits needed is $\frac{2n}{k}\log{(2(\log{2n})^2)}=\frac{2n}{\log{2n}}\times$ $\times(2\log{\log{2n}}+\log{2})=o(n)$ because each element of $B$ will be between $-(\log{2n})^2$ and $(\log{2n})^2$.
 
 Let's also calculate the sequence $A$ of the differences between the initial excess of each block and the initial excess of its super block:
     $$
     A_i = t^v_{ik}-T_{\left\lfloor{\frac{i}{k}}\right\rfloor} \qquad 0\leq i < \frac{2n}{k}
     $$
-if we save the sequence $A$ in an array the number of bits needed is $\frac{2n}{k}\log{\log{2n}}=o(n)$, so in total the number of bits used to store this second layer of information is $o(n)$.
+if we save the sequence $A$ in an array the number of bits needed is $\frac{2n}{k}\log{(2(\log{2n})^2)}=o(n)$, so in total the number of bits used to store this second layer of information is $o(n)$.
 
 \section{find\_close and find\_open}
 Once built the Segment Tree $S$ (whose root will be indicated with \texttt{root}) and calculated the values of $T$, $B$ and $A$ relative to the sequence of parentheses $v$ you can perform the operation \texttt{find\_close(i)} (assuming the parenthesis in position $i$ is open) as follows:
@@ -366,7 +366,7 @@ Symmetrically you can implement the operation \texttt{find\_open(i)}: just note 
     \end{algorithmic}
     \end{algorithm}
 \section{Find\_enclose}
-The operation \texttt{left\_enclose(i)} is analogous to \texttt{find\_open(i)} with the only difference that the excess searched is not $t^v_i$ but $t^v_i-1$:
+The operation \texttt{left\_enclose(i)} is analogous to \texttt{find\_open(i)} with the only difference that the excess searched is not $t^v_i$ but $t^v_i-1$ (and there is no solution if $t^v_i=0$):
     \begin{algorithm}[H]
     \caption{\texttt{Left\_enclose}}\label{leftenclose}
     \begin{algorithmic}[1]
@@ -381,24 +381,28 @@ The operation \texttt{left\_enclose(i)} is analogous to \texttt{find\_open(i)} w
             \State $u\gets u-1$
         \EndIf
         \State $u\gets u-1$\Comment{the excess searched now is $t^v_i-1$}
-        \State $tmp\gets 0$\Comment{step 2}
+        \If{u=-1}
+            \State \textbf{return} $-1$ \Comment{not found}
+        \EndIf
+        \State
+        \State $tmp\gets u+1$\Comment{step 2}
         \For{$x\gets i\ \textbf{down to}\ k\left\lfloor{\frac{i}{k}}\right\rfloor$}
-            \If{$v_x=1$}
-                \State $tmp\gets tmp+1$
-            \Else  
-                \State $tmp\gets tmp-1$
-            \EndIf
-            \If{$tmp=0$}
+            \If{$tmp=u$}
                 \State \textbf{return} $x$
+            \EndIf
     \algstore{alg1}            
     \end{algorithmic}
     \end{algorithm}
     \begin{algorithm}[ht]
     \begin{algorithmic}[1]
     \algrestore{alg1}
+            \If{$v_x=0$}
+                \State $tmp\gets tmp+1$
+            \EndIf
+            \If{$v_{x-1}=1$}
+                \State $tmp\gets tmp-1$
             \EndIf
         \EndFor
-        \State
         \For{$x\gets \left\lfloor{\frac{i}{k}}\right\rfloor-1\ \textbf{down to}\ k(\left\lfloor{\frac{i}{k^2}}\right\rfloor)$}\Comment{step 3}
             \If{$B_x+T_{\left\lfloor{\frac{i}{k^2}}\right\rfloor} \leq u$}
                 \State $currt\gets T_{\left\lfloor{\frac{i}{k^2}}\right\rfloor}+A_{x+1}$
@@ -446,7 +450,11 @@ And therefore the operation \texttt{find\_enclose} is just a call to \texttt{lef
     \begin{algorithmic}[1]
     \Procedure{Find\_enclose}{$root,T,A,B,n,v,i$}
     \State $x\gets$ \Call{Left\_enclose}{$root,T,A,B,n,v,i$}
-    \State \textbf{return} $(x,$\Call{Find\_close}{$x$}$)$
+    \If{$x=-1$}
+        \State \textbf{return} $(-1,-1)$ \Comment{no solution}
+    \Else
+        \State \textbf{return} $(x,$\Call{Find\_close}{$x$}$)$
+    \EndIf
     \EndProcedure
     \end{algorithmic}
     \end{algorithm}

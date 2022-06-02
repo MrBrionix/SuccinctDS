@@ -1,12 +1,15 @@
-package main
+package succinctDS
 
-import "math"
+import (
+  "math"
+  "segmentTree"  
+)
 
 type SuccinctDS struct {
   k, n, numBlock, numSuperBlock int // k = blocksize = ceil(log2n)
   A, B, T []int
   v []bool
-  S SegmentTree
+  S segmentTree.SegmentTree
 }
 
 func (ds *SuccinctDS) Build(sequence string) {
@@ -26,13 +29,20 @@ func (ds *SuccinctDS) Build(sequence string) {
       currT--
       t = append(t, currT)
     }
+    if(currT < 0) {
+      panic("invalid balanced parentheses sequence to succinctDS.Build")
+    }
+  }
+  if(currT != 0) {
+    panic("invalid balanced parentheses sequence to succinctDS.Build")
   }
 
+  ds.T = []int{}
   for i := 0; i < ds.numSuperBlock; i++ { //build first level
     mini := 2 * ds.n
     for j := i * ds.k * ds.k; j < (i + 1) * ds.k * ds.k; j++ {
       if j < len(t) {
-        mini = min(mini, t[j])
+        mini = segmentTree.Min(mini, t[j])
       }
     }
     s = append(s, mini)
@@ -40,11 +50,13 @@ func (ds *SuccinctDS) Build(sequence string) {
   }
   ds.S.Build(s)
 
+  ds.B = []int{}
+  ds.A = []int{}
   for i := 0; i < ds.numBlock; i++ { //build second level
     mini := 2 * ds.n
     for j := i * ds.k; j < (i + 1) * ds.k; j++ {
       if j < len(t) {
-        mini = min(mini, t[j])
+        mini =  segmentTree.Min(mini, t[j])
       }
     }
     ds.B = append(ds.B, mini - ds.T[i / ds.k])
@@ -53,6 +65,10 @@ func (ds *SuccinctDS) Build(sequence string) {
 }
 
 func (ds *SuccinctDS) FindClose(i int) int {
+  if !ds.v[i] {
+    return -1
+  }
+  
   u :=  ds.T[i / (ds.k * ds.k)] + ds.A[i / ds.k] - (i - ds.k * (i / ds.k)) //step 1
   for j := ds.k * (i / ds.k); j < i; j++ {
     if ds.v[j] {
@@ -96,7 +112,7 @@ func (ds *SuccinctDS) FindClose(i int) int {
   for y := x * ds.k; y < x * ds.k + ds.k; y++ {
     if ds.B[y] + ds.T[x] <= u {
       currt := ds.T[x] + ds.A[y]
-      for z :=  x * ds.k * ds.k + y * ds.k; z < x * ds.k * ds.k + y * ds.k + ds.k; z++ {
+      for z :=  y * ds.k; z < y * ds.k + ds.k; z++ {
         if currt == u {
           return z
         }
@@ -114,6 +130,10 @@ func (ds *SuccinctDS) FindClose(i int) int {
 }
 
 func (ds *SuccinctDS) FindOpen(i int) int {
+  if ds.v[i] {
+    return -1
+  }
+  
   u :=  ds.T[i / (ds.k * ds.k)] + ds.A[i / ds.k] - (i - ds.k * (i / ds.k) + 1) //step 1
   for j := ds.k * (i / ds.k); j < i; j++ {
     if ds.v[j] {
@@ -162,7 +182,7 @@ func (ds *SuccinctDS) FindOpen(i int) int {
       } else {
         currt = ds.T[x+1]
       }
-      for z :=  x * ds.k * ds.k + y * ds.k + ds.k - 1; z >= x * ds.k * ds.k + y * ds.k; z-- {
+      for z :=  y * ds.k + ds.k - 1; z >= y * ds.k; z-- {
         if !ds.v[z + 1] {
           currt++
         }
@@ -236,7 +256,7 @@ func (ds *SuccinctDS) LeftEnclose(i int) int {
       } else {
         currt = ds.T[x+1]
       }
-      for z :=  x * ds.k * ds.k + y * ds.k + ds.k - 1; z >= x * ds.k * ds.k + y * ds.k; z-- {
+      for z :=  y * ds.k + ds.k - 1; z >= y * ds.k; z-- {
         if !ds.v[z + 1] {
           currt++
         }
@@ -253,10 +273,18 @@ func (ds *SuccinctDS) LeftEnclose(i int) int {
   return -1 //not found
 }
 
-func (ds *SuccinctDS) FindEnclose(i int) (int, int) {
+func (ds *SuccinctDS) RightEnclose(i int) int {
   x := ds.LeftEnclose(i)
   if x == -1 {
-    return -1,-1
+    return -1
   }
-  return x,ds.FindClose(x)
+  return ds.FindClose(x)
+}
+
+func (ds *SuccinctDS) FindEnclose(i int) [2]int {
+  x := ds.LeftEnclose(i)
+  if x == -1 {
+    return [2]int{-1,-1}
+  }
+  return [2]int{x,ds.FindClose(x)}
 }

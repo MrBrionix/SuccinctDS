@@ -224,7 +224,7 @@ Once built the Segment Tree $S$ (whose root will be indicated with \texttt{root}
         \item Calculate the excess $u = t^v_i = T_{\left\lfloor{\frac{i}{k^2}}\right\rfloor}+A_{\left\lfloor{\frac{i}{k}}\right\rfloor} + (t^v_i-t^v_{k\left(\left\lfloor{\frac{i}{k}}\right\rfloor\right)})= T_{\left\lfloor{\frac{i}{k^2}}\right\rfloor}+A_{\left\lfloor{\frac{i}{k}}\right\rfloor}+2\sum_{j=k(\left\lfloor{\frac{i}{k}}\right\rfloor)}^{i-1} v_j-(i-k(\left\lfloor{\frac{i}{k}}\right\rfloor))+(1-v_{k(\left\lfloor{\frac{i}{k}}\right\rfloor)})$. It can be calculated in $\mathcal{O}(\log{n})$ (the summation contains at most $\log{2n}$ addends);
         \item Check if the searched position belongs to the same block of the index $i$ by performing a linear scan of all parentheses following $i$ until the end of the block it belongs to ($v_{i+1},\dots,v_{k(\left\lfloor{\frac{i}{k}}\right\rfloor+1)-1}$): if there is an index $x$ such that the number of open and closed parentheses between $i$ and $x$ is equal then $x$ is the position searched for. During this process, there are at most $k=\log{2n}$ accesses to the sequence $v$;
         \item Otherwise check if the searched position belongs to the same super block of the index $i$ by scanning the values of $B$ related to blocks after $i$ until the end of the super block that $i$ belongs to ($B_{\left\lfloor{\frac{i}{k}}\right\rfloor+1},\dots,B_{k(\left\lfloor{\frac{i}{k^2}}\right\rfloor+1)-1}$): if there is an index $x$ such that $B_x+T_{\left \lfloor{\frac{i}{k^2}}\right\rfloor} \leq t^v_i$ then the searched position belongs to the block $x$ (and this block is in the same super block of the index $i$), in this case to find the exact position in the block is sufficient a scan of all the parentheses of that block ($v_{xk},v_{xk+1},\dots,v_{xk+k-1}$) until the first index $y$ such that $t^v_y=t^v_i$ (note how you can calculate the value of $t^v_y$ during the scan using the same formula of step $1$). During this process, there are at most $k=\log{2n}$ accesses to the sequence $B$ and at most $k=\log{2n}$ accesses to the sequence $v$;
-        \item If the position was not found after the steps $2$ and $3$ means that the searched position is in another super block than the one where $i$ is, to find that super block just call the procedure \texttt{Find\_succ}$(B,\left\lfloor{\frac{i}{k^2}}\right\rfloor,t^v_i)$ that will return the index $x$ of the first super block that follows $i$ containing an excess less than or equal to $t^v_i$ (and since two consecutive values of $t^v$ differ by at most $1$, that super block will definitely contain an excess equal to $t^v_i$). At that point you have to search for the block where the searched position is located and then search for the exact position in a similar way as explained in step $3$: scan the values of $B$ relative to the blocks contained in the super block $x$ ($B_{xk},\dots,B_{xk+k-1}$) and if there is an index $y$ such that $B_y+T_x \leq t^v_i$ then the searched position is in the block $y$, finally to find the exact index you need to scan all the parentheses of that block ($v_{xk^2+yk},\dots,v_{xk^2+yk+k-1}$) until you find the first index $z$ such that $t^v_z=t^v_i$. During this process a call is made to the function \texttt{Find\_succ} (which has complexity $\mathcal{O}(\log{\frac{2n}{k^2}})=\mathcal{O}(\log{n})$) and there are at most $k=\log{2n}$ accesses to the sequence $B$ and at most $k=\log{2n}$ accesses to the sequence $v$;
+        \item If the position was not found after the steps $2$ and $3$ means that the searched position is in another super block than the one where $i$ is, to find that super block just call the procedure \texttt{Find\_succ}$(B,\left\lfloor{\frac{i}{k^2}}\right\rfloor,t^v_i)$ that will return the index $x$ of the first super block that follows $i$ containing an excess less than or equal to $t^v_i$ (and since two consecutive values of $t^v$ differ by at most $1$, that super block will definitely contain an excess equal to $t^v_i$). At that point you have to search for the block where the searched position is located and then search for the exact position in a similar way as explained in step $3$: scan the values of $B$ relative to the blocks contained in the super block $x$ ($B_{xk},\dots,B_{xk+k-1}$) and if there is an index $y$ such that $B_y+T_x \leq t^v_i$ then the searched position is in the block $y$, finally to find the exact index you need to scan all the parentheses of that block ($v_{yk},\dots,v_{yk+k-1}$) until you find the first index $z$ such that $t^v_z=t^v_i$. During this process a call is made to the function \texttt{Find\_succ} (which has complexity $\mathcal{O}(\log{\frac{2n}{k^2}})=\mathcal{O}(\log{n})$) and there are at most $k=\log{2n}$ accesses to the sequence $B$ and at most $k=\log{2n}$ accesses to the sequence $v$;
     \end{enumerate}
 In conclusion you can do the operation \texttt{find\_close} with complexity $\mathcal{O}(\log{n})$ using the sequence $v$ of parentheses that occupies $2n$ bits and other auxiliary structures (the Segment Tree related to the sequence $S$ and the sequences $T,B,A$) that occupy $o(n)$ bits. The following pseudocode shows the implementation of the whole procedure:
     \begin{algorithm}
@@ -277,7 +277,7 @@ In conclusion you can do the operation \texttt{find\_close} with complexity $\ma
         \For{$y\gets xk\ \textbf{to}\ xk+k-1$}
             \If{$B_y+T_x \leq u$}
                 \State $currt\gets T_x+A_y$
-                \For{$z\gets xk^2+yk\ \textbf{to}\ xk^2+yk+k-1$}
+                \For{$z\gets yk\ \textbf{to}\ yk+k-1$}
                     \If{$currt=u$}
                         \State \textbf{return} $z$
                     \EndIf
@@ -349,7 +349,7 @@ Symmetrically you can implement the operation \texttt{find\_open(i)}: just note 
                 \Else
                     \State $currt\gets T_{x+1}$
                 \EndIf
-                \For{$z\gets xk^2+yk+k-1\ \textbf{down to}\ xk^2+yk$}
+                \For{$z\gets yk+k-1\ \textbf{down to}\ yk$}
                     \If{$v_{z+1}=0$}
                         \State $currt\gets currt+1$
                     \EndIf
@@ -428,7 +428,7 @@ The operation \texttt{left\_enclose(i)} is analogous to \texttt{find\_open(i)} w
                 \Else
                     \State $currt\gets T_{x+1}$
                 \EndIf
-                \For{$z\gets xk^2+yk+k-1\ \textbf{down to}\ xk^2+yk$}
+                \For{$z\gets yk+k-1\ \textbf{down to}\ yk$}
                     \If{$v_{z+1}=0$}
                         \State $currt\gets currt+1$
                     \EndIf

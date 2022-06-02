@@ -1,4 +1,4 @@
-package main
+package segmentTree
 
 type SegmentTree struct {
   root *SegmentTreeNode

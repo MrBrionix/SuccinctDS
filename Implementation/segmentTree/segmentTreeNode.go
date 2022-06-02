@@ -1,6 +1,8 @@
-package main
+package segmentTree
 
-func min(x, y int) int {
+import "math"
+
+func Min(x, y int) int {
   if x < y {
     return x 
   } else {
@@ -22,17 +24,17 @@ func (node *SegmentTreeNode) Build(v []int, l, r int) {
   node.left.Build(v, l, (l + r) / 2)
   node.right = &SegmentTreeNode{}
   node.right.Build(v, (l + r) / 2 + 1, r)
-  node.mini = min(node.left.mini, node.right.mini)
+  node.mini = Min(node.left.mini, node.right.mini)
 }
 
 func (node *SegmentTreeNode) MinQuery(l , r, _l, _r int) int {
   if _r < l || _l > r || l > r {
-    return 0
+    return math.MaxInt
   }
   if _l >= l && _r <= r {
     return node.mini
   }
-  return min(node.left.MinQuery(l, r, _l, (_l + _r) / 2), node.right.MinQuery(l, r, (_l + _r) / 2 + 1, _r))
+  return Min(node.left.MinQuery(l, r, _l, (_l + _r) / 2), node.right.MinQuery(l, r, (_l + _r) / 2 + 1, _r))
 }
 
 func (node *SegmentTreeNode) FindSucc(ind, val, l, r int) int {

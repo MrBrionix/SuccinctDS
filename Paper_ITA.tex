@@ -224,7 +224,7 @@ Una volta creato il Segment Tree relativo a $S$ (la cui radice verrà indicata c
         \item Si calcola l'eccesso $u = t^v_i = T_{\left\lfloor{\frac{i}{k^2}}\right\rfloor}+A_{\left\lfloor{\frac{i}{k}}\right\rfloor} + (t^v_i-t^v_{k\left(\left\lfloor{\frac{i}{k}}\right\rfloor\right)})= T_{\left\lfloor{\frac{i}{k^2}}\right\rfloor}+A_{\left\lfloor{\frac{i}{k}}\right\rfloor}+2\sum_{j=k(\left\lfloor{\frac{i}{k}}\right\rfloor)}^{i-1} v_j-(i-k(\left\lfloor{\frac{i}{k}}\right\rfloor))+(1-v_{k(\left\lfloor{\frac{i}{k}}\right\rfloor)})$ che è possibile calcolare in $\mathcal{O}(\log{n})$ (la sommatoria contiene al più $\log{2n}$ addendi);
         \item Si verifica se la posizione cercata appartiene allo stesso blocco dell'indice $i$ effettuando una scansione lineare di tutte le parentesi che seguono $i$ fino alla fine del blocco a cui esso appartiene ($v_{i+1},v_{i+2},\dots,v_{k(\left\lfloor{\frac{i}{k}}\right\rfloor+1)-1}$): se vi è un indice $x$ tale che il numero di parentesi aperte e chiuse comprese fra $i$ e $x$ è uguale allora tale indice $x$ è la posizione cercata. Durante questo processo viene fatto accesso al più $k=\log 2n$ volte alla sequenza $v$;
         \item Altrimenti si verifica se la posizione cercata appartiene allo stesso super blocco dell'indice $i$ effettuando una scansione dei valori di $B$ relativi ai blocchi successivi a quello di $i$ fino alla fine del super blocco a cui appartiene $i$ ($B_{\left\lfloor{\frac{i}{k}}\right\rfloor+1},\dots,B_{k(\left\lfloor{\frac{i}{k^2}}\right\rfloor+1)-1}$): se vi è un indice $x$ tale che $B_x+T_{\left\lfloor{\frac{i}{k^2}}\right\rfloor} \leq t^v_i$ allora la posizione cercata si trova nel blocco $x$ (e questo blocco si trova nello stesso super blocco di $i$), in tal caso per trovare la posizione esatta basta una scansione di tutte le parentesi di tale blocco ($v_{xk},v_{xk+1},\dots,v_{xk+k-1}$) finchè non si trova il primo indice $y$ in cui vale $t^v_y=t^v_i$ (si noti come sia possibile calcolare mano a mano il valore di $t^v_y$ utilizzando la stessa formula del punto $1$). Durante questo processo viene fatto accesso al più $k=\log 2n$ volte alla sequenza $B$ e al più $k=\log 2n$ volte alla sequenza $v$;
-        \item Se non è stata trovata la posizione dopo gli step $2$ e $3$ significa che la posizione cercata si trova in un altro super blocco rispetto a quello in cui si trova $i$, per trovare tale super blocco basterà chiamare la procedura \texttt{Find\_succ}$(B,\left\lfloor{\frac{i}{k^2}}\right\rfloor,t^v_i)$ che provvederà a ritornare l'indice $x$ del primo super blocco che segue $i$ contenente un eccesso minore o uguale a $t^v_i$ (e poichè due valori consecutivi $t^v$ differiscono di al più $1$, quel super blocco conterrà sicuramente un eccesso uguale a $t^v_i$). A quel punto va ricercato il blocco in cui si trova la posizione cercata e dopodiché si ricerca la posizione esatta in modo analogo a quanto spiegato nello step $3$: si effettua una scansione dei valori di $B$ relativi ai blocchi contenuti nel super blocco $x$ ($B_{xk},\dots,B_{xk+k-1}$) e se vi è un indice $y$ tale che $B_y+T_x \leq t^v_i$ allora la posizione cercata si trova nel blocco $y$, infine per trovare la posizione esatta basta una scansione di tutte le parentesi di tale blocco ($v_{xk^2+yk},\dots,v_{xk^2+yk+k-1}$) finchè non si trova il primo indice $z$ in cui vale $t^v_z=t^v_i$. Durante questo processo viene effettuata una chiamata alla funzione \texttt{Find\_succ} (che ha complessità $\mathcal{O}(\log{\frac{2n}{k^2}})=\mathcal{O}(\log{n})$) e viene fatto accesso al più $k=\log 2n$ volta alla sequenza $B$ e al più $k=\log 2n$ volta alla sequenza $v$.
+        \item Se non è stata trovata la posizione dopo gli step $2$ e $3$ significa che la posizione cercata si trova in un altro super blocco rispetto a quello in cui si trova $i$, per trovare tale super blocco basterà chiamare la procedura \texttt{Find\_succ}$(B,\left\lfloor{\frac{i}{k^2}}\right\rfloor,t^v_i)$ che provvederà a ritornare l'indice $x$ del primo super blocco che segue $i$ contenente un eccesso minore o uguale a $t^v_i$ (e poichè due valori consecutivi $t^v$ differiscono di al più $1$, quel super blocco conterrà sicuramente un eccesso uguale a $t^v_i$). A quel punto va ricercato il blocco in cui si trova la posizione cercata e dopodiché si ricerca la posizione esatta in modo analogo a quanto spiegato nello step $3$: si effettua una scansione dei valori di $B$ relativi ai blocchi contenuti nel super blocco $x$ ($B_{xk},\dots,B_{xk+k-1}$) e se vi è un indice $y$ tale che $B_y+T_x \leq t^v_i$ allora la posizione cercata si trova nel blocco $y$, infine per trovare la posizione esatta basta una scansione di tutte le parentesi di tale blocco ($v_{yk},\dots,v_{yk+k-1}$) finchè non si trova il primo indice $z$ in cui vale $t^v_z=t^v_i$. Durante questo processo viene effettuata una chiamata alla funzione \texttt{Find\_succ} (che ha complessità $\mathcal{O}(\log{\frac{2n}{k^2}})=\mathcal{O}(\log{n})$) e viene fatto accesso al più $k=\log 2n$ volta alla sequenza $B$ e al più $k=\log 2n$ volta alla sequenza $v$.
     \end{enumerate}
 In conclusione è possibile effettuare l'operazione \texttt{find\_close} con complessità $\mathcal{O}(\log{n})$ utilizzando la sequenza $v$ di parentesi che occupa $2n$ bit e altre strutture ausiliare (il Segment Tree relativo alla sequenza $S$ e le sequenze $T,B,A$) che occupano $o(n)$ bit. Il seguente pseudocodice mostra l'implementazione di tutta la procedura:
     \begin{algorithm}
@@ -277,7 +277,7 @@ In conclusione è possibile effettuare l'operazione \texttt{find\_close} con com
         \For{$y\gets xk\ \textbf{to}\ xk+k-1$}
             \If{$B_y+T_x \leq u$}
                 \State $currt\gets T_x+A_y$
-                \For{$z\gets xk^2+yk\ \textbf{to}\ xk^2+yk+k-1$}
+                \For{$z\gets yk\ \textbf{to}\ yk+k-1$}
                     \If{$currt=u$}
                         \State \textbf{return} $z$
                     \EndIf
@@ -348,7 +348,7 @@ In modo simmetrico è possibile implementare l'operazione \texttt{find\_open(i)}
                 \Else
                     \State $currt\gets T_{x+1}$
                 \EndIf
-                \For{$z\gets xk^2+yk+k-1\ \textbf{down to}\ xk^2+yk$}
+                \For{$z\gets yk+k-1\ \textbf{down to}\ yk$}
                     \If{$v_{z+1}=0$}
                         \State $currt\gets currt+1$
                     \EndIf
@@ -429,7 +429,7 @@ L'operazione \texttt{left\_enclose(i)} è analoga a \texttt{find\_open(i)} con l
                 \Else
                     \State $currt\gets T_{x+1}$
                 \EndIf
-                \For{$z\gets xk^2+yk+k-1\ \textbf{down to}\ xk^2+yk$}
+                \For{$z\gets yk+k-1\ \textbf{down to}\ yk$}
                     \If{$v_{z+1}=0$}
                         \State $currt\gets currt+1$
                     \EndIf

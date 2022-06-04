@@ -6,18 +6,23 @@ import (
   "math/rand"
   "generator"
   "succinctDS"
+  "slowDS"
 )
 
-func AutomatedTest(showDetails bool) {
+func AutomatedTest(showDetails bool, slowCheck bool) {
   var t, n, q int
   fmt.Println("Enter t (number of tests), n (sequence size) and q (queries size)")
   fmt.Scan(&t, &n, &q) // t = number of tests, n = sequence size, q = queries size
   generator.SetSeed(time.Now().UnixNano())
 
   for i := 0; i < t; i++ {
-    var ds succinctDS.SuccinctDS
+    var (
+      ds succinctDS.SuccinctDS
+      dsSlow slowDS.SlowDS
+    )
     s := generator.RandSeq(n)
     ds.Build(s)
+    dsSlow.Build(s)
     if showDetails {
       fmt.Println("Sequence:")
       fmt.Println(s)
@@ -27,10 +32,9 @@ func AutomatedTest(showDetails bool) {
       mode := rand.Intn(4)
       ind := rand.Intn(2 * n)
       var (
-        ans interface{}
+        ans, ansSlow interface{}
         str string
       )
-      
       switch mode {
         case 0:
           str = "FindClose"
@@ -45,11 +49,31 @@ func AutomatedTest(showDetails bool) {
           str = "FindEnclose"
           ans = ds.FindEnclose(ind)
       }
-      if showDetails {
+      if slowCheck {
+        switch mode {
+          case 0:
+            ansSlow = dsSlow.FindClose(ind)
+          case 1:
+            ansSlow = dsSlow.FindOpen(ind)
+          case 2:
+            ansSlow = dsSlow.LeftEnclose(ind)
+          case 3:
+            ansSlow = dsSlow.FindEnclose(ind)
+        }
+      }
+      if showDetails || (slowCheck && ans != ansSlow) {
         fmt.Println("Query:")
         fmt.Println(str,"(type)",ind,"(index)")
         fmt.Println("Answer:")
         fmt.Println(ans)
+      }
+      if showDetails && slowCheck {
+        fmt.Println("Slow Answer:")
+        fmt.Println(ansSlow)
+      }
+      if slowCheck && ansSlow != ans {
+        fmt.Print("Wrong answer\n","Expected: ",ansSlow,"\nFound: ",ans,"\n")
+        return
       }
     }
   }

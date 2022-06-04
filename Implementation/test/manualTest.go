@@ -3,17 +3,20 @@ package test
 import (
   "fmt"
   "succinctDS"
+  "slowDS"
 )
 
 func ManualTest() {
   var (
-    x succinctDS.SuccinctDS
+    ds succinctDS.SuccinctDS
+    dsSlow slowDS.SlowDS
     s string
   )
 
   fmt.Println("Enter a balanced parentheses sequence:")
   fmt.Scan(&s)
-  x.Build(s)
+  ds.Build(s)
+  dsSlow.Build(s)
   
   var q int
   fmt.Println("Enter the number of queries:")
@@ -31,13 +34,24 @@ func ManualTest() {
     fmt.Print("Answer: ")
     switch tipo {
       case 0:
-        fmt.Println(x.FindClose(ind))
+        fmt.Println(ds.FindClose(ind))
       case 1:
-        fmt.Println(x.FindOpen(ind))
+        fmt.Println(ds.FindOpen(ind))
       case 2:
-        fmt.Println(x.LeftEnclose(ind))
+        fmt.Println(ds.LeftEnclose(ind))
       case 3:
-        fmt.Println(x.FindEnclose(ind))
+        fmt.Println(ds.FindEnclose(ind))
+    }
+    fmt.Print("Slow Answer: ")
+    switch tipo {
+      case 0:
+        fmt.Println(dsSlow.FindClose(ind))
+      case 1:
+        fmt.Println(dsSlow.FindOpen(ind))
+      case 2:
+        fmt.Println(dsSlow.LeftEnclose(ind))
+      case 3:
+        fmt.Println(dsSlow.FindEnclose(ind))
     }
   }
 }

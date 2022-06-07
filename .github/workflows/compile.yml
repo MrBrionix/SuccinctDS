@@ -10,13 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Compile
+      - name: Compile latex
         uses: xu-cheng/latex-action@v2
         with:
           latexmk_shell_escape: true
           root_file: Paper_EN.tex
-          working_directory: build/
-      - name: Upload
+      - name: Upload pdf
         uses: actions/upload-artifact@v3
         with:
           name: Paper_EN

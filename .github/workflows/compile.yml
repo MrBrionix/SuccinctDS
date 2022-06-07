@@ -1,0 +1,23 @@
+name: Compile
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Compile
+        uses: xu-cheng/latex-action@v2
+        with:
+          latexmk_shell_escape: true
+          root_file: Paper_EN.tex
+          working_directory: build/
+      - name: Upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: Paper_EN
+          path: build/Paper_EN.pdf

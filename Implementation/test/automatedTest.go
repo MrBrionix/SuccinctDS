@@ -72,6 +72,8 @@ func AutomatedTest(showDetails bool, slowCheck bool) {
         fmt.Println(ansSlow)
       }
       if slowCheck && ansSlow != ans {
+        fmt.Println("Sequence:")
+        fmt.Println(s)
         fmt.Print("Wrong answer\n","Expected: ",ansSlow,"\nFound: ",ans,"\n")
         return
       }

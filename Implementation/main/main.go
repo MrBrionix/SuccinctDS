@@ -4,5 +4,6 @@ import "test"
 
 func main() {
   //test.ManualTest()
-  test.AutomatedTest(false, false)  // showDetails, slowCheck
+  test.AutomatedTest(false, true)      // showDetails, slowCheck
+  //test.RankSelectDS(false, true)       // showDetails, slowCheck
 }

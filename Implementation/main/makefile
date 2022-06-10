@@ -1,3 +1,3 @@
-.DEFAULT_GOAL := build
-build: ; go run main.go
-compile: ; go build -o main main.go
+.DEFAULT_GOAL := run
+run: ; go run main.go
+build: ; go build -o main main.go

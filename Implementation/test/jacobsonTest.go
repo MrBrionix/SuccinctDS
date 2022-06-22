@@ -62,8 +62,6 @@ func JacobsonTest(showDetails bool) {
       //fmt.Println(time.Since(t).Nanoseconds())
       t2 += int(time.Since(t).Nanoseconds())
 
-      continue
-      
       if showDetails || ans != ansJacobson {
         fmt.Println("Query:")
         fmt.Println(str,"(type)",ind,"(index)")

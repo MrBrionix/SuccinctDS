@@ -8,7 +8,7 @@ import (
   "slowDS"
 )
 
-func RankSelectDS(showDetails bool, slowCheck bool) {
+func SuccinctRankSelectTest(showDetails bool, slowCheck bool) {
   var t, n, m, q int
   fmt.Println("Enter t (number of tests), n (sequence size), m (value size) and q (queries size)")
   fmt.Scan(&t, &n, &m, &q)
@@ -22,7 +22,7 @@ func RankSelectDS(showDetails bool, slowCheck bool) {
   
     v := make([]int, n)
     for j := 0; j < n; j++ {
-      v[j] = rand.Intn(2 * m - 1) - (m - 1) //random number in [-m+1, m-1]
+      v[j] = rand.Intn(2 * m) - (m - 1) //random number in [-m+1, m-1]
     }
     if showDetails {
       fmt.Println("Sequence:")

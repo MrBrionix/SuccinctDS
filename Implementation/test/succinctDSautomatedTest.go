@@ -9,7 +9,7 @@ import (
   "slowDS"
 )
 
-func AutomatedTest(showDetails bool, slowCheck bool) {
+func SuccinctDSAutomatedTest(showDetails bool, slowCheck bool) {
   var t, n, q int
   fmt.Println("Enter t (number of tests), n (sequence size) and q (queries size)")
   fmt.Scan(&t, &n, &q) // t = number of tests, n = sequence size, q = queries size

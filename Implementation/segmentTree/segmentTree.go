@@ -15,7 +15,7 @@ func (st *SegmentTree) Build(v []int) {
   }
 }
 
-func (st *SegmentTree) MinQuery(l, r int) int { // Extra: find the minumum value between l and r (inclusive)
+func (st *SegmentTree) MinQuery(l, r int) int { // Extra: find the minimum value between l and r (inclusive)
   return st.root.MinQuery(l, r, 0, st.size - 1)
 }
 

@@ -6,7 +6,7 @@ import (
   "slowDS"
 )
 
-func ManualTest() {
+func SuccinctDSManualTest() {
   var (
     ds succinctDS.SuccinctDS
     dsSlow slowDS.SlowDS

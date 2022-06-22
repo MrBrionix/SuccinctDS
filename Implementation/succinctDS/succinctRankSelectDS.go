@@ -143,6 +143,6 @@ func (ds *SuccinctRankSelectDS) SelectFirst(i int, u int) int {
   return -1
 }
 
-func (ds *SuccinctRankSelectDS) Select(u int) int {
+func (ds *SuccinctRankSelectDS) Select(u int) int {  //classic select for bit sequences
   return ds.SelectLast(ds.n - 1, u)
 }

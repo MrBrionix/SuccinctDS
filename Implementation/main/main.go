@@ -1,9 +1,14 @@
 package main
 
-import "test"
+import (
+  "test"
+  //"jacobsonDS"
+  //"fmt"
+)
 
 func main() {
-  //test.ManualTest()
-  test.AutomatedTest(false, true)      // showDetails, slowCheck
-  //test.RankSelectDS(false, true)       // showDetails, slowCheck
+  //test.SuccinctDSManualTest()
+  //test.SuccinctDSAutomatedTest(false, true)      // showDetails, slowCheck
+  //test.SuccinctRankSelectTest(false, true)       // showDetails, slowCheck
+  test.JacobsonTest(false)
 }

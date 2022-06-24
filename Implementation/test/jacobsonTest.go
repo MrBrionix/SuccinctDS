@@ -14,8 +14,6 @@ func JacobsonTest(showDetails bool) {
   fmt.Scan(&t, &n, &q)
 
   rand.Seed(time.Now().UnixNano())
-  t1 := 0
-  t2 := 0
   
   for i := 0; i < t; i++ {
     var (
@@ -42,7 +40,7 @@ func JacobsonTest(showDetails bool) {
     dsJacobson.Build(vb);
 
     for j := 0; j < q; j++ {
-      ind := rand.Intn(n)
+      ind := rand.Intn(n + 1)
       var (
         ans, ansJacobson interface{}
         str string
@@ -50,17 +48,9 @@ func JacobsonTest(showDetails bool) {
       
       str = "Rank"
 
-      t := time.Now()
       ans = ds.Rank(ind)
 
-      //fmt.Println(time.Since(t).Nanoseconds())
-      t1 += int(time.Since(t).Nanoseconds())
-
-      t = time.Now()
       ansJacobson = dsJacobson.Rank(ind)
-
-      //fmt.Println(time.Since(t).Nanoseconds())
-      t2 += int(time.Since(t).Nanoseconds())
 
       if showDetails || ans != ansJacobson {
         fmt.Println("Query:")
@@ -69,18 +59,17 @@ func JacobsonTest(showDetails bool) {
         fmt.Println(ans)
       }
       if showDetails {
-        fmt.Println("Slow Answer:")
+        fmt.Println("Jacobson Answer:")
         fmt.Println(ansJacobson)
       }
       if ansJacobson != ans {
         fmt.Println("Sequence:")
         fmt.Println(v)
-        fmt.Print("Wrong answer\n","Expected: ",ansJacobson,"\nFound: ",ans,"\n")
+        fmt.Print("Wrong answer\n","Expected: ",ans,"\nFound: ",ansJacobson,"\n")
         return
       }
     }
   }
 
   fmt.Println(t*q,"queries have been executed succesfully")
-  fmt.Println("Time elapsed:",t1,t2)
 }

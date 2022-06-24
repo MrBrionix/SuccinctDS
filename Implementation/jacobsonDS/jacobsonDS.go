@@ -36,10 +36,18 @@ type JacobsonDS struct {
   partialRanks [][]int
 }
 
+func (ds *JacobsonDS) getIndex(l, r int) int {
+  if l / Word_Size == r / Word_Size {
+    return (ds.v[l / Word_Size] >> (l % Word_Size)) & ((1 << (r-l)) - 1)
+  }
+  return (ds.v[l / Word_Size] >> (l % Word_Size)) + ((ds.v[r / Word_Size] & ((1 << (r % Word_Size) - 1))) << (Word_Size - (l % Word_Size)))
+}
+
 func (ds *JacobsonDS) Build(sequence []bool) {
-  ds.n = len(sequence)
+  ds.n = len(sequence) + 1
   ds.dimBlock = int(math.Ceil(0.5 * math.Log2(float64(ds.n))))
   ds.dimSuperBlock = int(math.Ceil(math.Log2(float64(ds.n)) * math.Log2(float64(ds.n))))
+  
   for ds.dimSuperBlock % ds.dimBlock != 0 {
     ds.dimSuperBlock++
   }
@@ -49,14 +57,25 @@ func (ds *JacobsonDS) Build(sequence []bool) {
   currT := 0
 
   ds.v = []int{}
+  tmp := []int{}
   for _, x := range sequence { //compute the prefix sums
     t = append(t,currT)
     if x {
       currT++
-      ds.v = append(ds.v, 1)
+      tmp = append(tmp, 1)
     } else {
-      ds.v = append(ds.v, 0)
+      tmp = append(tmp, 0)
     }
+  }
+  t = append(t,currT)
+  tmp = append(tmp, 0)
+
+  for len(tmp) % Word_Size != 0 {
+    tmp = append(tmp, 0)
+  }
+
+  for i := 0; i < len(tmp) / Word_Size; i++ {
+    ds.v = append(ds.v, list2index(tmp[i * Word_Size : (i + 1) * Word_Size]))
   }
 
   for i := 0; i < ds.numSuperBlock; i++ { //build first level
@@ -73,5 +92,5 @@ func (ds *JacobsonDS) Build(sequence []bool) {
 }
 
 func (ds *JacobsonDS) Rank(i int) int {
-  return ds.superBlockRanks[i / ds.dimSuperBlock] + ds.blockRanks[i / ds.dimBlock] + ds.partialRanks[list2index(ds.v[i - (i % ds.dimBlock): i - (i % ds.dimBlock) + ds.dimBlock])][i % ds.dimBlock]
+  return ds.superBlockRanks[i / ds.dimSuperBlock] + ds.blockRanks[i / ds.dimBlock] + ds.partialRanks[ds.getIndex(i - i % ds.dimBlock, i - i % ds.dimBlock + ds.dimBlock)][i % ds.dimBlock]
 }

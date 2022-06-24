@@ -34,7 +34,7 @@ func SuccinctRankSelectTest(showDetails bool, slowCheck bool) {
 
     for j := 0; j < q; j++ {
       mode := rand.Intn(4)
-      ind := rand.Intn(n)
+      ind := rand.Intn(n + 1)
       val := 0
       var (
         ans, ansSlow interface{}

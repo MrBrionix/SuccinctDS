@@ -14,7 +14,7 @@ jobs:
         uses: xu-cheng/latex-action@v2
         with:
           latexmk_shell_escape: true
-          root_file: Paper_EN.tex
+          root_file: Description/Paper_EN.tex
       - name: Upload pdf
         uses: actions/upload-artifact@v3
         with:

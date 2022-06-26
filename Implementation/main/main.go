@@ -11,7 +11,7 @@ func main() {
   //test.SuccinctRankSelectTest(false, true)       // showDetails, slowCheck
   //test.JacobsonTest(false)                       // showDetails
   //benchmark.GenerateQuery()
-  //benchmark.SuccinctRankSelectBenchmark()
+  benchmark.SuccinctRankSelectBenchmark()
   //benchmark.JacobsonBenchmark()
-  benchmark.JacobsonSlowBenchmark()
+  //benchmark.JacobsonSlowBenchmark()
 }

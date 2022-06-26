@@ -10,7 +10,7 @@ import (
 
 func SuccinctRankSelectBenchmark() {
 
-  rand.Seed(1)//time.Now().UnixNano())
+  rand.Seed(0)//time.Now().UnixNano())
   f1, _ := os.Create("data11.txt")
   n := 1024
   
@@ -38,8 +38,6 @@ func SuccinctRankSelectBenchmark() {
     t := 30
     for i := 0; i < t; i++ {
       t1 := 0
-
-      ans:=0
       
       ind := make([]int,q)
       
@@ -49,21 +47,17 @@ func SuccinctRankSelectBenchmark() {
       
       t := time.Now()
       for j := 0; j < q; j++ {
-        ans = ds.Rank(ind[j])      
-        
-        if i * q + j == 3476832 {
-          fmt.Println(ind[j], ans)
-        }
+        _ = ds.Rank(ind[j])      
       }
       t1 = int(time.Since(t).Nanoseconds())  
       
       m1 += float64(t1) / float64(q)
       
-      //fmt.Print(i," ")
+      fmt.Print(i," ")
     }
     
     m1 = m1 / float64(t)
-    //fmt.Print("-------------\nResults for ",n,":\n","SuccinctDS: ",m1,"\n")
+    fmt.Print("-------------\nResults for ",n,":\n","SuccinctDS: ",m1,"\n")
     
     fmt.Fprint(f1,"(",n,",",m1,")")
     n *= 2

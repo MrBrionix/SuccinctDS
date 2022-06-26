@@ -10,7 +10,7 @@ import (
 
 func JacobsonBenchmark() {
 
-  rand.Seed(0)//time.Now().UnixNano())  
+  rand.Seed(1)//time.Now().UnixNano())  
   f2, _ := os.Create("data22.txt")
 
   n := 1024
@@ -38,23 +38,33 @@ func JacobsonBenchmark() {
     t := 30
     for i := 0; i < t; i++ {
       t2 := 0
+      
+      ans:=0
 
+      ind := make([]int,q)
+      
       for j := 0; j < q; j++ {
-        ind := rand.Intn(n + 1)
-        
-        t := time.Now()
-        _ = dsJacobson.Rank(ind)
-        t2 += int(time.Since(t).Nanoseconds())
+        ind[j] = rand.Intn(n + 1)
       }
+      
+      t := time.Now()
+      for j := 0; j < q; j++ {      
+        ans = dsJacobson.Rank(ind[j])
+        
+        if i * q + j == 3476832 {
+          fmt.Println(ind[j], ans)
+        }
+      }
+      t2 = int(time.Since(t).Nanoseconds())
      
       m2 += float64(t2) / float64(q)
   
-      fmt.Print(i," ")
+      //fmt.Print(i," ")
     }
     
     m2 = m2 / float64(t)
     
-    fmt.Print("-------------\nResults for ",n,":\n","JacobsonDS: ",m2,"\n")
+    //fmt.Print("-------------\nResults for ",n,":\n","JacobsonDS: ",m2,"\n")
     
     fmt.Fprint(f2,"(",n,",",m2,")")
     n *= 2

@@ -8,6 +8,9 @@
 \usepackage{caption}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
 %\usepackage{graphicx}
 %\usepackage[colorlinks=true, allcolors=blue]{hyperref}
 
@@ -460,4 +463,70 @@ And therefore the operation \texttt{find\_enclose} is just a call to \texttt{lef
     \end{algorithm}
 \section{Conclusions}
 It has been shown how to perform the operations \texttt{find\_close}, \texttt{find\_open} and \texttt{find\_enclose} with $\mathcal{O}(\log{n})$ complexity using $2n+o(n)$ bits. The initial construction of all the necessary structures has complexity $\mathcal{O}(n)$.
+
+\section{Experiments}
+
+\begin{center}
+    \begin{tikzpicture}
+    \begin{axis}[
+        title={Average rank time over $10^6$ operations},
+        xmode=log,
+        ymode=log,
+        xlabel={bits},
+        ylabel={rank time (ns)},
+        xmin=700, xmax=200000000,
+        ymin=1, ymax=1000,
+        legend pos=north west,
+        grid style=dashed
+        %legend style={font=\tiny}
+    ]
+    
+    \addplot[
+        color=blue,
+        dotted,
+        mark=square,
+        mark options={solid}
+        ]
+        coordinates {
+        (1024,22.260389866666664)(2048,21.632234499999996)(4096,21.78527973333333)(8192,22.31620623333334)(16384,22.3508161)(32768,22.518472633333335)(65536,22.106238166666667)(131072,23.44986696666667)(262144,23.3546266)(524288,23.54799120000001)(1048576,23.766337966666672)(2097152,24.356845)(4194304,24.020421400000007)(8388608,24.216382266666663)(16777216,25.253238599999996)(33554432,25.112168766666663)(67108864,25.771720966666667)(134217728,25.925554166666675)
+        };
+        \addlegendentry{\texttt{SuccinctRankSelectDS}}
+        
+    \addplot[
+        color=red,
+        dash pattern=on 1pt off 3pt on 3pt off 3pt,
+        mark=o,
+        mark options={solid}
+        ]
+        coordinates {
+        (1024,11.9079315)(2048,11.415417066666667)(4096,11.726542933333336)(8192,12.315543966666668)(16384,12.5096618)(32768,12.124949866666665)(65536,13.612070033333334)(131072,14.185817066666669)(262144,14.9554078)(524288,15.927701266666666)(1048576,17.7290944)(2097152,21.90122986666666)(4194304,29.475657366666663)(8388608,46.112946266666654)(16777216,57.614466033333315)(33554432,68.56925756666666)(67108864,83.6088405)(134217728,87.92505726666666)
+        };
+        \addlegendentry{\texttt{JacobsonDS}}
+        
+    \addplot[
+        color=green,
+        dashed,
+        mark=x,
+        mark options={solid}
+        ]
+        coordinates {
+        (1024,8.527320333333334)(2048,8.8580143)(4096,8.495861933333334)(8192,9.826865733333335)(16384,11.2087367)(32768,12.587983633333328)(65536,14.196538933333333)(131072,16.954471666666667)(262144,18.637653066666665)(524288,26.79197683333333)(1048576,53.48165106666667)(2097152,73.59647573333334)(4194304,81.9556144333333)(8388608,83.87903903333333)(16777216,95.09200526666665)(33554432,108.8487699)(67108864,121.6854127)(134217728,169.19223623333335)
+        };
+        \addlegendentry{\texttt{SlowJacobsonDS}}
+    \end{axis}
+    \end{tikzpicture}
+\end{center}
+
+\begin{center}
+    \begin{tabular}{ r | c | c | c }
+        Size & \texttt{SuccinctRankSelectDS} & \texttt{JacobsonDS} & \texttt{SlowJacobsonDS} \\ \hline
+        1 Kib & 22.26 & 11.91 & 8.53 \\
+        16 Kib & 22.35 & 12.51 & 11.21 \\
+        256 Kib & 23.35 & 14.96 & 18.64 \\
+        4 Mib & 24.02 & 29.48 & 81.96 \\
+        64 Mib & 25.77 & 83.61 & 121.69 \\
+        128 Mib & 25.93 & 87.93 & 169.19 \\
+    \end{tabular}
+\end{center}
+
 \end{document}

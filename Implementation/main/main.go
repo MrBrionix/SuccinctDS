@@ -10,6 +10,8 @@ func main() {
   //test.SuccinctDSAutomatedTest(false, true)      // showDetails, slowCheck
   //test.SuccinctRankSelectTest(false, true)       // showDetails, slowCheck
   //test.JacobsonTest(false)                       // showDetails
-  benchmark.SuccinctRankSelectBenchmark()
   //benchmark.GenerateQuery()
+  //benchmark.SuccinctRankSelectBenchmark()
+  //benchmark.JacobsonBenchmark()
+  benchmark.JacobsonSlowBenchmark()
 }

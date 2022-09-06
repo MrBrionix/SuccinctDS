@@ -37,30 +37,30 @@ func (node *SegmentTreeNode) MinQuery(l , r, _l, _r int) int {
   return Min(node.left.MinQuery(l, r, _l, (_l + _r) / 2), node.right.MinQuery(l, r, (_l + _r) / 2 + 1, _r))
 }
 
-func (node *SegmentTreeNode) FindSucc(ind, val, l, r int) int {
+func (node *SegmentTreeNode) SelectFirst(ind, val, l, r int) int {
   if ind >= r || node.mini > val {
     return -1
   }
   if l == r {
     return l
   }
-  res := node.left.FindSucc(ind, val, l, (l + r) / 2)
+  res := node.left.SelectFirst(ind, val, l, (l + r) / 2)
   if res != -1 {
     return res
   }
-  return node.right.FindSucc(ind, val, (l + r) / 2 + 1, r)
+  return node.right.SelectFirst(ind, val, (l + r) / 2 + 1, r)
 }
 
-func (node *SegmentTreeNode) FindPrev(ind, val, l, r int) int {
+func (node *SegmentTreeNode) SelectLast(ind, val, l, r int) int {
   if ind <= l || node.mini > val {
     return -1
   }
   if l == r {
     return l
   }
-  res := node.right.FindPrev(ind, val, (l + r) / 2 + 1, r)
+  res := node.right.SelectLast(ind, val, (l + r) / 2 + 1, r)
   if res != -1 {
     return res
   }
-  return node.left.FindPrev(ind, val, l, (l + r) / 2)
+  return node.left.SelectLast(ind, val, l, (l + r) / 2)
 }

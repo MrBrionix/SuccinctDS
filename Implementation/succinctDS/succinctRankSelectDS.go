@@ -82,7 +82,7 @@ func (ds *SuccinctRankSelectDS) SelectLast(i int, u int) int {
     }
   }
 
-  x := ds.S.FindPrev(i / (ds.k * ds.k), u)
+  x := ds.S.SelectLast(i / (ds.k * ds.k), u)
 
   if x != -1 {
     for y := x * ds.k + ds.k - 1; y >= x * ds.k; y-- {
@@ -126,7 +126,7 @@ func (ds *SuccinctRankSelectDS) SelectFirst(i int, u int) int {
     }
   }
 
-  x := ds.S.FindSucc(i / (ds.k * ds.k), u)
+  x := ds.S.SelectFirst(i / (ds.k * ds.k), u)
   if x != -1 {
     for y := x * ds.k; y < x * ds.k + ds.k; y++ {
       if ds.B[y] + ds.T[x] <= u {

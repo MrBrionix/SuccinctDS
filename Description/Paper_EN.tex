@@ -67,7 +67,7 @@ Let $v$ be a sequence of bits of length $n$ numbered from $0$ to $n-1$ and $v_i$
         \item $\text{select}_v(i)$ is the index of the ($i+1$)-th bit equal to 1 in the sequence if it exists, otherwise it is equal to $n$:
             $$\text{select}_v(i)=\max\{j : \text{rank}(j) \leq i \land j \leq n\}.$$ 
     \end{itemize}
-Now consider a list of $n$ integers between $-M$ and $M$, the information-theoretic lower bound for its representation will be $\log^n{(2M+1)}=n\log{(2M+1)}$.
+Now consider a list of $n$ integers between $-M$ and $M$, the information-theoretic lower bound for its representation will be $\log{((2M+1)^n)}=n\log{(2M+1)}$.
 In this document will be defined a possible extension of rank/select queries suitable on lists of integers and devised a succinct data structure that, given an integer list of length $n$, implements such operations with a time complexity of $\mathcal{O}(\log{n})$ using $n\log{(2M+1)} + o(n\log{(2M)})$ bits of memory. Also it will be shown how a possible use of such generalized rank/select queries is the management of sequences of balanced parentheses.
 
 \section{Notations}

@@ -46,15 +46,15 @@ func SuccinctRankSelectTest(showDetails bool, slowCheck bool) {
           ans = ds.Rank(ind)
         case 1:
           str = "SelectLast"
-          val = rand.Intn(n * (2 * m - 1)) - n * (m - 1)
+          val = rand.Intn(n * 2 * (m - 1) + 1) - n * (m - 1)
           ans = ds.SelectLast(ind, val)
         case 2:
           str = "SelectFirst"
-          val = rand.Intn(n * (2 * m - 1)) - n * (m - 1)
+          val = rand.Intn(n * 2 * (m - 1) + 1) - n * (m - 1)
           ans = ds.SelectFirst(ind, val)
         case 3:
           str = "Select"
-          val = rand.Intn(n * (2 * m - 1)) - n * (m - 1)
+          val = rand.Intn(n * 2 * (m - 1) + 1) - n * (m - 1)
           ans = ds.Select(val)
       }
       if slowCheck {

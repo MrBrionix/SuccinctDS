@@ -22,7 +22,7 @@ func SuccinctRankSelectTest(showDetails bool, slowCheck bool) {
   
     v := make([]int, n)
     for j := 0; j < n; j++ {
-      v[j] = rand.Intn(2 * m) - (m - 1) //random number in [-m+1, m-1]
+      v[j] = rand.Intn(2 * m - 1) - (m - 1) //random number in [-m+1, m-1]
     }
     if showDetails {
       fmt.Println("Sequence:")
